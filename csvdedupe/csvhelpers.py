@@ -63,7 +63,7 @@ def readData(input_file, field_names, delimiter=',', prefix=None):
 def writeResults(clustered_dupes, input_file, output_file):
 
     # Write our original data back out to a CSV with a new column called 
-    # 'Cluster ID' which indicates which records refer to each other.
+    # 'cluster_id' which indicates which records refer to each other.
 
     logging.info('saving results to: %s' % output_file)
 
@@ -79,7 +79,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     reader = csv.reader(StringIO(input_file))
 
     heading_row = next(reader)
-    heading_row.insert(0, u'Cluster ID')
+    heading_row.insert(0, u'cluster_id')
     writer.writerow(heading_row)
 
     for row_id, row in enumerate(reader):
