@@ -2,7 +2,10 @@ from setuptools import setup
 import sys
 
 requirements = ['future>=0.14',
-                'dedupe>=1.6']
+                'dedupe>=1.6',
+                'dedupe-variable-name',
+                'dedupe-variable-address'
+                ]
 
 if sys.version < '3':
     requirements += ['backports.csv']
