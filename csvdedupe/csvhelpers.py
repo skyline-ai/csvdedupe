@@ -103,14 +103,17 @@ def writeResults(clustered_dupes, input_file, output_file):
 def writeUniqueResults(clustered_dupes, input_file, output_file):
 
     # Write our original data back out to a CSV with a new column called 
-    # 'Cluster ID' which indicates which records refer to each other.
+    # 'cluster_id' which indicates which records refer to each other.
 
     logging.info('saving unique results to: %s' % output_file)
 
     cluster_membership = {}
     for cluster_id, (cluster, score) in enumerate(clustered_dupes):
-        for record_id in cluster:
-            cluster_membership[record_id] = cluster_id
+        for record_index, record_id in enumerate(cluster):
+            cluster_membership[record_id] = {
+                'cluster_id': cluster_id,
+                'score': score[record_index],
+            }
 
     unique_record_id = cluster_id + 1
 
@@ -119,21 +122,26 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
     reader = csv.reader(StringIO(input_file))
 
     heading_row = next(reader)
-    heading_row.insert(0, u'Cluster ID')
+    heading_row.insert(0, u'cluster_id')
+    heading_row.insert(1, u'score')
     writer.writerow(heading_row)
 
     seen_clusters = set()
     for row_id, row in enumerate(reader):
         if row_id in cluster_membership:
-            cluster_id = cluster_membership[row_id]
+            cluster_id = cluster_membership[row_id]['cluster_id']
+            score = cluster_membership[row_id]['score']
             if cluster_id not in seen_clusters:
                 row.insert(0, cluster_id)
+                row.insert(1, score)
                 writer.writerow(row)
                 seen_clusters.add(cluster_id)
         else:
             cluster_id = unique_record_id
             unique_record_id += 1
+            score = ''
             row.insert(0, cluster_id)
+            row.insert(1, score)
             writer.writerow(row)
 
 
