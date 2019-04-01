@@ -68,13 +68,21 @@ class CSVDedupe(csvhelpers.CSVCommand) :
 
         data_d = csvhelpers.readData(self.input, self.field_names, delimiter=self.delimiter)
 
+        # fix price
+        for field in self.field_definition:
+            if field['type'] == 'Price':
+                for key, record in data_d.items():
+                    value = record[field['field']]
+                    if value:
+                        record[field['field']] = int(value)
+
         # fix latlon
         for field in self.field_definition:
             if field['type'] == 'LatLong':
                 for key, record in data_d.items():
-                    if record[field['field']]:
-                        latlon = record[field['field']].split(',')
-                        record[field['field']] = (float(latlon[0]), float(latlon[1])) if len(latlon) == 2 else None
+                    latitude = record[field['latitude']]
+                    longitude = record[field['longitude']]
+                    record[field['field']] = (float(latitude), float(longitude)) if latitude and longitude else None
 
         logging.info('imported %d rows', len(data_d))
 
