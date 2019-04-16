@@ -74,7 +74,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
                 for key, record in data_d.items():
                     value = record[field['field']]
                     if value:
-                        record[field['field']] = int(value)
+                        record[field['field']] = int(float(value))
 
         # fix latlon
         for field in self.field_definition:

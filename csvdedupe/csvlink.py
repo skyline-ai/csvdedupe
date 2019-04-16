@@ -77,6 +77,38 @@ class CSVLink(csvhelpers.CSVCommand):
                                     delimiter=self.delimiter,
                                     prefix='input_2')
 
+        # fix price
+        for field in self.field_definition:
+            if field['type'] == 'Price':
+                for key, record in data_1.items():
+                    value = record[field['field']]
+                    if value:
+                        record[field['field']] = int(float(value))
+
+        # fix latlon
+        for field in self.field_definition:
+            if field['type'] == 'LatLong':
+                for key, record in data_1.items():
+                    latitude = record[field['latitude']]
+                    longitude = record[field['longitude']]
+                    record[field['field']] = (float(latitude), float(longitude)) if latitude and longitude else None
+
+        # fix price
+        for field in self.field_definition:
+            if field['type'] == 'Price':
+                for key, record in data_2.items():
+                    value = record[field['field']]
+                    if value:
+                        record[field['field']] = int(float(value))
+
+        # fix latlon
+        for field in self.field_definition:
+            if field['type'] == 'LatLong':
+                for key, record in data_2.items():
+                    latitude = record[field['latitude']]
+                    longitude = record[field['longitude']]
+                    record[field['field']] = (float(latitude), float(longitude)) if latitude and longitude else None
+
         # sanity check for provided field names in CSV file
         for field in self.field_names_1:
             if field not in list(data_1.values())[0]:
